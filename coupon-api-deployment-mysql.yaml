@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coupon-mysql
+  labels:
+    app: coupon-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coupon-mysql
+  template:
+    metadata:
+      labels:
+        app: coupon-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: ubuntu/mysql:edge
+        command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--explicit_defaults_for_timestamp=1"]
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_DATABASE
+          value: "coupon"
+        - name: MYSQL_USER
+          value: "abcd"
+        - name: MYSQL_PASSWORD
+          value: "1234"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "1234"
+        - name: TZ
+          value: "UTC"
+        volumeMounts:
+        - name: mysql-init
+          mountPath: /docker-entrypoint-initdb.d
+      restartPolicy: Always
+      volumes:
+      - name: mysql-init
+        hostPath:
+          path: localhost

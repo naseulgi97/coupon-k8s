@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coupon-redis
+  labels:
+    app: coupon-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coupon-redis
+  template:
+    metadata:
+      labels:
+        app: coupon-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7.2-alpine
+        command: ["redis-server", "--port", "6380"]
+        ports:
+        - containerPort: 6380
+        env:
+        - name: name
+          value: "redis"
+        - name: mode
+          value: "standalone"
+      restartPolicy: Always
